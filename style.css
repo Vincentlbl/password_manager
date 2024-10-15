@@ -29,8 +29,7 @@ body {
     margin-top: 2.5rem;
 }
 
-.password-generator h2,
-.password-list h3 {
+.password-generator h2,.password-list h3 {
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 1rem;
