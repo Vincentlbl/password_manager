@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Mots de Passe</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body x-data="passwordGenerator()" class="dark-mode">
+    <h1 class="title">Projet Alpine.js </h1>
+    <div class="main-container">
+        <div class="password-generator">
+            <h2>Générateur de Mots de Passe</h2>
+            <div class="input-group">
+                <label>Nom du service :</label>
+                <input type="text" x-model="service" placeholder="Nom du service" class="input-field" />
+            </div>
+            <div class="input-group">
+                <label>Longueur :</label>
+                <input type="number" x-model="length" min="4" max="64" class="input-field" />
+            </div>
+            <div class="checkbox-group">
+                <label class="flex items-center">
+                    <input type="checkbox" x-model="includeUppercase" class="checkbox" />
+                    <span>Inclure des majuscules</span>
+                </label>
+                <label class="flex items-center">
+                    <input type="checkbox" x-model="includeNumbers" class="checkbox" />
+                    <span>Inclure des chiffres</span>
+                </label>
+                <label class="flex items-center">
+                    <input type="checkbox" x-model="includeSymbols" class="checkbox" />
+                    <span>Inclure des symboles</span>
+                </label>
+            </div>
+            <button @click="generatePassword" class="generate-btn">
+                Générer pour le service
+            </button>
+            <div class="mt-4 relative">
+                <input :type="showPassword ? 'text' : 'password'" x-model="password" readonly class="input-field" />
+                <span @click="toggleShowPassword" class="toggle-password">
+                    <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" class="icon" style="display: none;" x-bind:style="{ display: !showPassword ? 'block' : 'none' }">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <svg x-show="showPassword" xmlns="http://www.w3.org/2000/svg" class="icon" style="display: none;" x-bind:style="{ display: showPassword ? 'block' : 'none' }">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A9.956 9.956 0 0112 19c-4.477 0-8.268-2.943-9.542-7 1.274-4.057-5.065-7-9.542-7-1.066 0-2.1.154-3.087.44m1.726 1.12a9.978 9.978 0 012.729 5.44c-1.274 4.057-5.065 7-9.542 7a9.959 9.959 0 01-4.905-1.357M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+                    </svg>
+                </span>
+            </div>
+            
+            
+            
+            <button @click="copyPassword" class="copy-btn">
+                Copier
+            </button>
+        </div>
+        <div class="password-list">
+            <h3>Mes mots de passe</h3>
+            <ul>
+                <template x-for="(entry, index) in storedPasswords" :key="index">
+                    <li class="password-entry">
+                        <div>
+                            <strong x-text="entry.service"></strong> :
+                            <span x-text="entry.show ? entry.password : '*'.repeat(entry.password.length)"></span>
+                        </div>
+                        <span @click="toggleStoredPassword(index)" class="toggle-password">
+                            <svg x-show="!entry.show" xmlns="http://www.w3.org/2000/svg" class="icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <svg x-show="entry.show" xmlns="http://www.w3.org/2000/svg" class="icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A9.956 9.956 0 0112 19c-4.477 0-8.268-2.943-9.542-7 1.274-4.057-5.065-7-9.542-7-1.066 0-2.1.154-3.087.44m1.726 1.12a9.978 9.978 0 012.729 5.44c-1.274 4.057-5.065 7-9.542 7a9.959 9.959 0 01-4.905-1.357M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+                            </svg>
+                        </span>
+                        <button @click="deletePassword(index)" class="delete-btn">
+                            Supprimer
+                        </button>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function passwordGenerator() {
+            return {
+                darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+                length: 12,
+                includeUppercase: true,
+                includeNumbers: true,
+                includeSymbols: true,
+                service: '',
+                password: '',
+                storedPasswords: JSON.parse(localStorage.getItem('passwords')) || [],
+                showPassword: false,  
+                toggleShowPassword() {
+                    this.showPassword = !this.showPassword;  
+                },
+                generatePassword() {
+                    if (!this.service) {
+                        alert('Veuillez entrer un nom de service');
+                        return;
+                    }
+        
+                    const lower = "abcdefghijklmnopqrstuvwxyz";
+                    const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    const numbers = "0123456789";
+                    const symbols = "!@#$%^&*()_+[]{}|;:,.<>?";
+        
+                    let charset = lower;
+                    if (this.includeUppercase) charset += upper;
+                    if (this.includeNumbers) charset += numbers;
+                    if (this.includeSymbols) charset += symbols;
+        
+                    this.password = Array.from({ length: this.length }, () => charset[Math.floor(Math.random() * charset.length)]).join('');
+                    this.storedPasswords.push({ service: this.service, password: this.password, show: false });
+                    localStorage.setItem('passwords', JSON.stringify(this.storedPasswords));
+                    this.service = '';
+                },
+                copyPassword() {
+                    if (this.password) {
+                        navigator.clipboard.writeText(this.password).then(() => {
+                            alert('Mot de passe copié dans le presse-papiers !');
+                        }).catch(err => {
+                            console.error('Erreur lors de la copie du mot de passe:', err);
+                        });
+                    }
+                },
+                toggleStoredPassword(index) {
+                    this.storedPasswords[index].show = !this.storedPasswords[index].show;
+                    localStorage.setItem('passwords', JSON.stringify(this.storedPasswords));
+                },
+                deletePassword(index) {
+                    this.storedPasswords.splice(index, 1);
+                    localStorage.setItem('passwords', JSON.stringify(this.storedPasswords));
+                }
+            };
+        }
+        
+    </script>
+    <footer class="copyright">
+        &copy; 2024 Vincent. Tous droits réservés.
+    </footer>
+    
+</body>
+</html>

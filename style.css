@@ -1,0 +1,123 @@
+body {
+    background-color: #000000; 
+    color: #f3f4f6; 
+}
+
+.title {
+    font-size: 3rem; 
+    text-align: center; 
+    color: #ffffff; 
+    margin-top: 2rem; 
+}
+
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    min-height: 100vh;
+    padding: 2.5rem;
+}
+
+.password-generator,
+.password-list {
+    background-color: #1f3e3a;
+    padding: 2.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 24rem;
+    margin-top: 2.5rem;
+}
+
+.password-generator h2,
+.password-list h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+
+.input-field {
+    width: 100%;
+    padding: 0.5rem;
+    padding-right: 2.5rem; 
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    color: #1f2937;
+    position: relative;
+}
+
+.input.input-field {
+    color: #4a5568;
+}
+
+.checkbox-group {
+    margin-bottom: 1rem;
+}
+
+.checkbox {
+    margin-right: 0.5rem;
+}
+
+
+.generate-btn,
+.copy-btn,
+.delete-btn {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #000000;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.generate-btn:hover,
+.copy-btn:hover,
+.delete-btn:hover {
+    background-color: #10342f;
+}
+
+.delete-btn {
+    margin-left: 1rem;
+    padding: 0.25rem 0.5rem;
+    background-color: #2d0807;
+}
+
+.delete-btn:hover {
+    background-color: #000000;
+}
+
+
+.icon {
+    height: 1.5rem;
+    width: 1.5rem;
+    fill: none;
+    stroke: #4a5568;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+
+.password-entry {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-right: 2rem; 
+}
+.copyright {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 1rem;
+    font-size: 0.8rem; 
+    color: #ffffff; 
+    background-color: transparent;
+}
